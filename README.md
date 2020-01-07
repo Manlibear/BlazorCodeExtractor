@@ -1,10 +1,24 @@
-A dotnet CLI command to extract Blazor @code blocks and add them back in to the page markup for display.
+A dotnet CLI command to extract Blazor @code blocks and save them as markdown alongside the original file.
 
-This is a partial hack to help answer https://stackoverflow.com/questions/59593826/how-to-print-code-section-of-a-razor-page-to-the-html-view.
+This is a quick-and-dirty project to help answer https://stackoverflow.com/questions/59593826/how-to-print-code-section-of-a-razor-page-to-the-html-view.
+
+If you start with a simple **Index.razor** page:
+
+```
+<h1>Hello world!</h1>
+
+@code {
+  private string _name = "Andy";
+}
+```
+
+...and run `extract-blazor-code` either manually or as a build task it will generate **Index.razor.md** containing just your code block and its content.
+
+# Instructions
 
 ## Modify Program
 
-Don't use as-is, this is a demo hack. Review program.cs and adjust to suit your needs. This appends your @code block as an HTML <code> block **each time it runs**, you don't want this and need to adjust. What you do with your sexy new <code> is up to you.
+Don't use as-is, this is legit demoware. Review program.cs and adjust to suit your needs. 
 
 ## Build and Install Locally
 
@@ -23,26 +37,4 @@ Navigate to client-side Blazor project:
 extract-blazor-code
 ```
 
-This finds all .razor files, extracts @code blocks, and appends them back in within an HTML code block.
-
-For example, if you have home.razor:
-
-```
-@code {
-  private string _name = "Andy";
-}
-```
-
-After running command you'll get:
-
-```
-@code {
-  private string _name = "Andy";
-}
-
-<code>
-@@code {
-  private string _name = "Andy";
-}
-</code>
-```
+This finds all .razor files, extracts @code blocks, and generates markdown files with only the @code. 
