@@ -35,3 +35,5 @@ artifacts/
 
 # Cake.NET
 tools/
+
+src/BlazorCodeExtractor/nupkg/

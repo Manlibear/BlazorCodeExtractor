@@ -13,33 +13,38 @@ namespace BlazorCodeExtractor
 
             foreach (var file in files)
             {
-                var lines = new List<string>();
+                Console.WriteLine($"Processing file {file}");
+
+                var lines = new List<string>
+                {
+                    Environment.NewLine,
+                    "<code>",
+                    "</code>"
+                };
+
                 var isCode = false;
 
                 using (var sr = File.OpenText(file))
                 {
-                    string s;
+                    var line = sr.ReadLine();
 
-                    while ((s = sr.ReadLine()) != null)
+                    while (!string.IsNullOrEmpty(line))
                     {
-                        if (s.StartsWith("@code") || isCode)
+                        if (line.StartsWith("@code") || isCode)
                         {
                             isCode = true;
 
-                            lines.Add(s);
+                            lines.Insert(lines.Count - 1, line.Replace("@", "@@"));
                         }
+
+                        line = sr.ReadLine();
                     }
                 }
 
                 if (isCode)
                 {
-                    lines.Insert(0, "<code>");
-                    lines.Add("</code>");
-
                     await File.AppendAllLinesAsync(file, lines);
                 }
-
-                Console.WriteLine(file);
             }
         }
     }
