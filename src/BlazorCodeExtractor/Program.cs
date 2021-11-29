@@ -18,28 +18,27 @@ namespace BlazorCodeExtractor
 
                 var codeBlock = await TryGetCode(file);
                 var markdownFile = file.Replace(".razor", ".razor.md");
+                var targetFile = $"wwwroot\\{markdownFile}".Replace("\\Pages\\", "\\Code\\");
 
-                if (File.Exists(markdownFile))
+                if (File.Exists(targetFile))
                 {
-                    File.Delete(markdownFile);
+                    File.Delete(targetFile);
                 }
 
                 if (!codeBlock.Any())
                 {
+                    Console.WriteLine($"...No @code section found, skipping\n");
                     continue;
                 }
 
-                Console.WriteLine($"Creating file {markdownFile}");
+                Console.WriteLine($"...Creating file {targetFile}\n");
 
-                await using var streamWriter = File.CreateText(markdownFile);
-                await streamWriter.WriteLineAsync("```");
+                await using var streamWriter = File.CreateText(targetFile);
 
                 foreach (var line in codeBlock)
                 {
                     await streamWriter.WriteLineAsync(line);
                 }
-
-                await streamWriter.WriteLineAsync("```");
             }
         }
 
@@ -51,7 +50,7 @@ namespace BlazorCodeExtractor
             var isCode = false;
             var line = await reader.ReadLineAsync();
 
-            while (!string.IsNullOrEmpty(line))
+            while (line != null)
             {
                 if (line.StartsWith("@code") || isCode) // TODO: Needs smarter way to know when code block ends
                 {
